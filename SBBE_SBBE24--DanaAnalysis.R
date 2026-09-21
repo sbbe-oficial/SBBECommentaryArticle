@@ -26,7 +26,7 @@ showtext_auto()
 
 
 # Loads data ~
-fulldf <- read.csv("./SBBELists/SBBEmembers--29Apr26.csv", header = TRUE, stringsAsFactors = FALSE, sep = ",")
+fulldf <- read.csv("./SBBELists/SBBEmembers--12Aug26.csv", header = TRUE, stringsAsFactors = FALSE, sep = ",")
 
 
 # Loads data ~
@@ -259,6 +259,7 @@ variable_levels <- c("AC", "AP", "AM", "PA", "RO", "RR", "TO",
                      "Uni. Federal de Pelotas",
                      "Uni. Federal de Ciências da Saúde de Porto Alegre",
                      "Uni. Federal do Rio Grande do Sul",
+                     "Uni. Federal da Fronteira Sul",
                      "Pontifícia Uni. Católica do Rio Grande do Sul",
                      "Uni. Federal da Integração Latino-Americana",
                      "Uni. Estadual de Maringá",
@@ -299,6 +300,7 @@ variable_levels <- c("AC", "AP", "AM", "PA", "RO", "RR", "TO",
                      "Uni. Federal do Estado do Rio de Janeiro",
                      "Uni. Estadual do Norte Fluminense", 
                      "Fundação Oswaldo Cruz — Rio de Janeiro",
+                     "Fundação Oswaldo Cruz — Amazônia",
                      "Jardim Botânico do Rio de Janeiro",
                      "Museu Nacional",
                      "Uni. do Estado do Rio de Janeiro",
@@ -349,10 +351,10 @@ variable_levels <- c("AC", "AP", "AM", "PA", "RO", "RR", "TO",
                      "Museu Paraense Emílio Goeldi",
                      "Uni. Federal do Amapá",
                      "Uni. Federal do Pará",
-                     "Inst. Tecnológico Vale",
                      "Inst. Nacional de Pesquisas da Amazônia",
                      "Uni. Federal de Roraima",
                      "Uni. Federal do Amazonas",
+                     "Inst. Tecnológico Vale",
                      "Feminino",
                      "Masculino",
                      "Outro",
@@ -596,12 +598,12 @@ merged_dfs <- left_join(combined_dfs, BRL_Regions_df, by = "name_region", suffix
 
 # Performs the change ~
 resulting_dfs <- merged_dfs %>%
-                 mutate(geom = ifelse(Division == "Per Region", geom.BRL, geom))
+                 mutate(geometry = ifelse(Division == "Per Region", geometry.BRL, geometry))
 
 
 # Eliminates unnecessary column ~
 resulting_dfs <- resulting_dfs %>% 
-                 dplyr::select(-c(n, geom.BRL))
+                 dplyr::select(-c(n, geometry.BRL))
 
 
 # Converts data frame back to sf ~
@@ -1250,13 +1252,70 @@ else {ggsave(filename,
              width = 12.25,
              height = 6,
              dpi = 100)}}
-  
+
 
 # Runs function to get the Article Map in different flavour ~ 
 make_map_plot("./SBBEPlots/SBBEArticleMap_Fig2-EN.pdf", x_labels = xlabel_EN, y_labels = ylabel_EN, region_label_column = "name_region_EN", filter_abroad_only = FALSE, format = "pdf")
 make_map_plot("./SBBEPlots/SBBEArticleMap_Fig2-PT.pdf", x_labels = xlabel_PT, y_labels = ylabel_PT, region_label_column = "name_region", filter_abroad_only = TRUE, format = "pdf")
 make_map_plot("./SBBEPlots/SBBEArticleMap_Fig2-EN.png", x_labels = xlabel_EN, y_labels = ylabel_EN, region_label_column = "name_region_EN", filter_abroad_only = FALSE, format = "png")
 
+
+head(Circular)
+
+
+
+
+# 1. Helper data frame for % labels per facet
+percent_labels <- Circular %>%
+  group_by(Facet_Var) %>%
+  summarise(x_pos = max(ID), .groups = "drop") %>%
+  crossing(y = c(5, 10, 15)) %>%
+  mutate(label = paste0(y, "%"))
+
+# 2. Updated Plot with Faceting
+Institutions_Plot <- ggplot(Circular, aes(x = as.factor(ID), y = Percentage * 100, fill = Region)) +
+  geom_bar(stat = "identity", alpha = 1) +
+  scale_fill_manual(values = c("#1b9e77", "#fdb462", "#fb8072", "#bebada", "#80b1d3", "#c994c7")) +
+  
+  # Gridlines (must contain Facet_Var)
+  geom_segment(data = grid_data_Circular, aes(x = end, y = 5, xend = start, yend = 5), 
+               colour = "#000000", alpha = 1, linewidth = .25, linetype = 4, inherit.aes = FALSE) +
+  geom_segment(data = grid_data_Circular, aes(x = end, y = 10, xend = start, yend = 10), 
+               colour = "#000000", alpha = 1, linewidth = .25, linetype = 4, inherit.aes = FALSE) +
+  geom_segment(data = grid_data_Circular, aes(x = end, y = 15, xend = start, yend = 15), 
+               colour = "#000000", alpha = 1, linewidth = .25, linetype = 4, inherit.aes = FALSE) +
+  
+  # Facet-aware percentage text (replaces annotate)
+  geom_text(data = percent_labels, aes(x = x_pos, y = y, label = label), 
+            family = "Cormorant", size = 8, fontface = "bold", color = "#000000", hjust = 1, inherit.aes = FALSE) +
+  
+  ylim(-100, 80) +
+  labs(title = "Instituições Representadas na SBBE",
+       subtitle = "Institutions Represented in SBBE") +
+  theme(panel.background = element_rect(fill = "#ffffff"),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        legend.position = "none",
+        plot.title = element_text(family = "Cormorant", size = 20, face = "bold", hjust = .5),
+        plot.subtitle = element_text(family = "Cormorant", size = 16, colour = "#555555", face = "bold", hjust = .5),
+        strip.background = element_blank(),
+        strip.text = element_text(family = "Cormorant", size = 14, face = "bold"),
+        axis.text = element_blank(),
+        axis.title = element_blank(), 
+        axis.ticks = element_blank()) +
+  coord_polar() +
+  
+  # Labels with mapped angle
+  geom_text(data = label_data_Circular, aes(x = ID, y = Percentage * 100 + 6, 
+                                            label = Variable, hjust = hjust, angle = angle), 
+            family = "Cormorant", size = 9, color = "#000000", fontface = "bold", inherit.aes = FALSE) +
+  
+  # Base lines
+  geom_segment(data = base_data_Circular, aes(x = start, y = -5, xend = end, yend = -5), 
+               colour = "#000000", alpha = 1, size = .6, inherit.aes = FALSE) +
+  
+  # Add the facet layer
+  facet_wrap(~ Facet_Var)
 
 
 
