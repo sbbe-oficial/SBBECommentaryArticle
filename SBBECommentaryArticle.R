@@ -19,8 +19,6 @@ pacman::p_load(tidyverse, ggnewscale, ggtext, ggstar, ggrepel, shadowtext, readx
 
 # Loads extra fonts ~
 loadfonts()
-font_add_google("Barlow", "Barlow")
-font_add_google("IM FELL DW Pica", "IM")
 font_add_google("Cormorant Garamond", "Cormorant")
 showtext_auto()
 
@@ -473,23 +471,6 @@ fulldf_RegionAttendeesPerc <- subset(fulldfUltra, Data == "Attendees") %>%
 fulldfUltra <- fulldfUltra %>% dplyr::mutate(Stage = gsub(" \\+ Membro fundador da SBBE", "", Stage))
 
 
-fulldf_StageRegionAttendeesPerc_Matheus <- fulldfUltra %>%
-  dplyr::filter(Data == "Attendees", Region != "Error", !str_detect(Stage, "Sem inscrição no SBBE24")) %>%
-  dplyr::count(Stage, Region) %>%
-  dplyr::group_by(Stage) %>%
-  dplyr::mutate(Percentage = (n / sum(n)) * 100) %>%
-  dplyr::ungroup() %>%
-  dplyr::rename(Variable = Region) %>%
-  tidyr::complete(Stage, Variable = AllBRLRegions, fill = list(n = 0, Percentage = 0)) %>%
-  dplyr::mutate(Variable = factor(Variable, levels = variable_levels, ordered = TRUE), 
-                Stats = "StageRegionAttendees") %>%
-  dplyr::select(Stage, Variable, n, Percentage)
-
-
-# Saves the lists of Focal Genes ~
-write.table(fulldf_StageRegionAttendeesPerc_Matheus, file = "SBBE--Region-Stage.txt", sep = "\t", quote = FALSE, row.names = FALSE)
-
-
 # Gets percentage for Gender ~
 fulldf_GenderMembersPerc <- subset(fulldfUltra, Data == "Members") %>%
                                    dplyr::filter(Region != "Error") %>%
@@ -736,174 +717,11 @@ fulldf_map <- fulldf_map %>%
                                               "<span style='font-size:78pt; color:#ffffff;'><br>", name_region_EN, "</span>"))
 
 
-# Creates MiniMap ~
-MiniMap_Bilingual <- ggplot() +
-  geom_sf(data = subset(fulldf_map, name_region != "SBBE24"), 
-          aes(fill = name_region), 
-          colour = "#f7fbff") +
-  geom_star(data = subset(fulldf_map, Division == "Per Region" & Region == "Exterior"),
-            aes(x = Longitude, y = Latitude, fill = name_region), 
-            size = 30, starshape = 8, starstroke = .3, colour = "#f7fbff") +
-  scale_fill_manual(values = c("#1b9e77", "#fdb462", "#fb8072", "#bebada", "#80b1d3", "#c994c7")) +
-  ggtext::geom_richtext(data = subset(fulldf_map, Division == "Per Region" & Stats == "Members" & Region != "SBBE24" & Region != "SBBE26"),
-                        aes(x = Longitude, y = Latitude, label = name_region_Bilingual),
-                        family = "Cormorant", fontface = "bold", size = 8, colour = "#000000", fill = NA, label.color = NA, lineheight = .55) +
-  coord_sf(xlim = c(-75.75, -33), ylim = c(-35, 6.5), expand = FALSE) +
-  theme_void() +
-  theme(legend.position = "none",
-        panel.background = element_rect(fill = "transparent", color = NA),
-        plot.background = element_rect(fill = "transparent", color = NA))
-
-
-# Creates Institutions bilingual plot ~
-Institutions_Plot <- ggplot(Circular, aes(x = as.factor(ID), y = Percentage * 100, fill = Region)) +
-                     geom_bar(stat = "identity", alpha = 1) +
-                     scale_fill_manual(values = c("#1b9e77", "#fdb462", "#fb8072", "#bebada", "#80b1d3", "#c994c7")) +
-                     geom_segment(data = grid_data_Circular, aes(x = end, y = 5, xend = start, yend = 5), 
-                                  colour = "#000000", alpha = 1, linewidth = .25, linetype = 4, inherit.aes = FALSE) +
-                     geom_segment(data = grid_data_Circular, aes(x = end, y = 10, xend = start, yend = 10), 
-                                  colour = "#000000", alpha = 1, linewidth = .25, linetype = 4, inherit.aes = FALSE) +
-                     geom_segment(data = grid_data_Circular, aes(x = end, y = 15, xend = start, yend = 15), 
-                                  colour = "#000000", alpha = 1, linewidth = .25, linetype = 4, inherit.aes = FALSE) +
-                     annotate("text", x = rep(max(Circular$ID), 3), y = c(5, 10, 15), 
-                              label = c("5%", "10%", "15%"), family = "Cormorant", size = 26, fontface = "bold", 
-                              color = "#000000", hjust = 1) +
-                     geom_bar(stat = "identity", alpha = .5) +
-                     ylim(-100, 80) +
-                     labs(title = "Instituições Representadas na SBBE",
-                          subtitle = "Institutions Represented in SBBE") +
-                     theme(panel.background = element_rect(fill = "#ffffff"),
-                           panel.grid = element_blank(),
-                           panel.border = element_blank(),
-                           legend.position = "none",
-                           plot.title = element_text(family = "Cormorant", size = 250, face = "bold", hjust = .5, margin = margin(t = 22)),
-                           plot.subtitle = element_text(family = "Cormorant", size = 250, colour = "#555555", face = "bold", hjust = .5, margin = margin(t = 12)),
-                           axis.text = element_blank(),
-                           axis.title = element_blank(), 
-                           axis.ticks = element_blank()) +
-                     coord_polar() +
-                     geom_text(data = label_data_Circular, aes(x = ID, y = Percentage * 100 + 6, 
-                               label = Variable, hjust = hjust), family = "Cormorant", size = 30, 
-                               color = "#000000", fontface = "bold", angle = label_data_Circular$angle, inherit.aes = FALSE) +
-                     geom_segment(data = base_data_Circular, aes(x = start, y = -5, xend = end, yend = -5), 
-                                  colour = "#000000", alpha = 1, size = .6, inherit.aes = FALSE)
-  
-
-# Merges Institutions bilingual plot with MiniMap ~
-Institutions_PlotUp <- Institutions_Plot + 
-                       inset_element(MiniMap_Bilingual, left = .329, bottom = .2725, right = .329 + .35, top = .2725 + .35, align_to = "full") +
-                                     plot_layout(guides = "collect")
-  
-
-# Saves Institutions bilingual plot ~
-ggsave("./SBBEPlots/SBBEMembersInstitutions.png", Institutions_PlotUp, limitsize = FALSE,
-       device = "png", scale = 1, width = 14, height = 15, dpi = 600)
-
-
 # Gets Gender data frame ~
 Gender <- fulldfPlots %>% 
           filter(Stats %in% c("GenderMembers", "StageMembers")) %>%
           droplevels() %>%
           arrange(desc(Percentage))
-
-
-# Adds English & bilingual labels  ~
-Gender <- Gender %>%
-          mutate(Variable_EN = case_when(Variable == "Masculino" ~ "Male",
-                                         Variable == "Feminino" ~ "Female",
-                                         Variable == "Outro" ~ "Other",
-                                         Variable == "Profissional" ~ "Professional",
-                                         Variable == "Pós-graduação" ~ "Postgrad",
-                                         Variable == "Graduação" ~ "Undergrad", TRUE ~ Variable),
-                 Variable_Bilingual_1 = paste0("<span style='font-size:62pt; color:#000000;'>", Variable, 
-                                               "<span style='font-size:62pt; color:#555555;'><br>", Variable_EN, "</span>"))
-
-
-# Adds empty bars for spacing in circular plot ~
-empty_bar <- 6
-to_add <- data.frame(matrix(NA, empty_bar * nlevels(Gender$Stats), ncol(Gender)))
-colnames(to_add) <- colnames(Gender)
-to_add$Stats <- rep(levels(Gender$Stats), each = empty_bar)
-Gender <- rbind(Gender, to_add)
-Gender <- Gender %>% arrange(Stats)
-Gender$ID <- seq(1, nrow(Gender))
-
-
-# Computes base and grid data for plot ~
-base_data_Gender <- Gender %>% 
-  group_by(Stats) %>% 
-  summarize(start = min(ID), 
-            end = max(ID) - empty_bar, 
-            N = n(), .groups = "drop") %>%
-  mutate(end = ifelse(N == 1, start + 1, end)) %>%
-  mutate(title = (start + end) / 2)
-grid_data_Gender <- base_data_Gender
-grid_data_Gender$end <- grid_data_Gender$end[ c(nrow(grid_data_Gender), 1:(nrow(grid_data_Gender) - 1)) ] + 1
-grid_data_Gender$start <- grid_data_Gender$start - 1
-grid_data_Gender <- grid_data_Gender[-1, ]
-
-
-# Computes number of bars ~
-number_of_bars <- nrow(Gender)
-                  label_data <- Gender %>%
-                  filter(Percentage > 0) %>%
-                  mutate(angle = 90 - 360 * (ID - 0.5) / nrow(Gender),
-                  hjust = ifelse(angle < -90, 1, 0),
-                  angle = ifelse(angle < -90, angle + 180, angle),
-                  label_y = ifelse(Percentage * 100 > 30, Percentage * 100 + 8, Percentage * 100 + 5))
-                  
-
-# Creates Gender plot ~
-Gender_Plot <- 
- ggplot(Gender, aes(x = as.factor(ID), y = Percentage * 100, fill = Stats)) +
-    geom_bar(stat = "identity", alpha = 1) +
-    geom_bar(aes(x = as.factor(ID), y = Percentage * 100, fill = Region), 
-             stat = "identity", alpha = 0.5) +
-    geom_segment(data = grid_data_Gender, aes(x = end, y = 10, xend = start, yend = 10), 
-                 colour = "#000000", linewidth = 0.25, linetype = 4, inherit.aes = FALSE) +
-    geom_segment(data = grid_data_Gender, aes(x = end, y = 20, xend = start, yend = 20), 
-                 colour = "#000000", linewidth = 0.25, linetype = 4, inherit.aes = FALSE) +
-    geom_segment(data = grid_data_Gender, aes(x = end, y = 30, xend = start, yend = 30), 
-                 colour = "#000000", linewidth = 0.25, linetype = 4, inherit.aes = FALSE) +
-    geom_segment(data = grid_data_Gender, aes(x = end, y = 40, xend = start, yend = 40), 
-                 colour = "#000000", linewidth = 0.25, linetype = 4, inherit.aes = FALSE) +
-    geom_segment(data = grid_data_Gender, aes(x = end, y = 50, xend = start, yend = 50), 
-                 colour = "#000000", linewidth = 0.25, linetype = 4, inherit.aes = FALSE) +
-    geom_segment(data = base_data_Gender,
-                 aes(x = start, y = -5, xend = end, yend = -5),
-                 colour = "#000000", size = .6, inherit.aes = FALSE) +
-    annotate("text", x = rep(max(Gender$ID), 5), y = c(10, 20, 30, 40, 50), 
-             label = c("10%", "20%", "30%", "40%", "50%"), 
-             family = "Cormorant", size = 20, fontface = "bold", color = "#000000", hjust = 1) +
-    ggtext::geom_richtext(data = label_data, 
-                          aes(x = ID, y = label_y, label = Variable_Bilingual_1, 
-                              angle = angle, hjust = hjust),
-                          fill = NA, label.color = NA, 
-                          family = "Cormorant", 
-                          size = 6,
-                          fontface = "bold", 
-                          color = "#000000", 
-                          lineheight = .75,
-                          inherit.aes = FALSE) +
-    scale_fill_manual(values = c("#e5d8bd", "#fdbf6f"), na.translate = FALSE) +
-    labs(title = "Membros da SBBE por Estágio Acadêmico & Gênero",
-         subtitle = "SBBE Members by Academic Stage & Gender") +
-    ylim(-90, 70) +
-    coord_polar() +
-    theme(panel.background = element_rect(fill = "#ffffff"),
-          panel.grid = element_blank(),
-          panel.border = element_blank(),
-          legend.position = "none",
-          plot.title = element_text(family = "Cormorant", size = 100, face = "bold", hjust = .5, margin = margin(t = 10)),
-          plot.subtitle = element_text(family = "Cormorant", size = 100, colour = "#555555", face = "bold", hjust = .5, margin = margin(t = 8.5)),
-          axis.text = element_blank(),
-          axis.title = element_blank(), 
-          axis.ticks = element_blank())
-
-
-# Saves Gender plot ~
-ggsave("./SBBEPlots/SBBEMembersStats.png", Gender_Plot, limitsize = FALSE,
-       device = "png", scale = 1, width = 8, height = 7, dpi = 600)
 
 
 # Adds English & bilingual labels  ~
@@ -915,122 +733,6 @@ fulldf_map <- fulldf_map %>%
 fulldf_map <- fulldf_map %>%
               mutate(Division_Bilingual = case_when(Division == "Per State" ~ "<span style='font-size:86pt;'>Por Estado</span><br><span style='font-size:86pt; color:#000000;'>Per State</span>",
                                                     Division == "Per Region" ~ "<span style='font-size:86pt;'>Por Região</span><br><span style='font-size:86pt; color:#000000;'>Per Region</span>", TRUE ~ Division))
-
-
-# Creates Members Map ~
-Map_Members <-
- ggplot() +
-    geom_sf(data = subset(fulldf_map, Stats == "Members"), aes(fill = Percentage * 100), colour = "#f7fbff") +
-    coord_sf(xlim = c(-75.75, -33), ylim = c(-35, 6.5), expand = FALSE) +
-    scale_y_continuous(breaks = c(0, -10, -20, -30)) +
-    geom_star(data = subset(fulldf_map, Division == "Per Region" & Stats == "Members" & Region == "Exterior"),
-              aes(x = Longitude, y = Latitude, fill = Percentage), size = 25, starshape = 8,
-              starstroke = .3, colour = "#f7fbff") +
-    labs(title = "% de Membros da SBBE por Região & Estado",
-         subtitle = "% of SBBE Members per Region & State") +
-    scale_fill_continuous(low = "#ece7f2", high = "#023858",
-                          breaks = c(10, 20, 30, 40, 50),
-                          labels = c("10%", "20%", "30%", "40%", "50%"),
-                          limits = c(0, 60)) +
-    ggtext::geom_richtext(data = subset(fulldf_map, Division == "Per Region" & Stats == "Members" & Region != "SBBE24" & Region != "SBBE26"),
-                        aes(x = Longitude, y = Latitude, label = name_region_Bilingual_2),
-                        family = "Cormorant", fontface = "bold", size = 8, colour = "#000000", fill = NA, label.color = NA, lineheight = .4) +
-    facet_grid(. ~ Division, labeller = labeller(Division = ~ unique(fulldf_map$Division_Bilingual[match(.x, fulldf_map$Division)]))) +
-    annotation_scale(data = subset(fulldf_map, Division == "Per Region" & Stats == "Members"),
-                     text_family = "Cormorant", location = "bl", line_width = 1,
-                     text_cex = 6, style = "ticks",
-                     pad_x = unit(.1, "in"), pad_y = unit(.1, "in")) +
-    annotation_north_arrow(data = subset(fulldf_map, Division == "Per Region" & Stats == "Members"),
-                           location = "bl", which_north = "true", style = north_arrow_fancy_orienteering,
-                           pad_x = unit(.1, "in"), pad_y = unit(.175, "in")) +
-    theme(legend.position = "right",
-          legend.margin = margin(t = 0, b = 0, r = 0, l = 15),
-          legend.box.margin = margin(t = 0, b = 0, r = 0, l = 0),
-          panel.background = element_rect(fill = "#ffffff"),
-          panel.border = element_rect(colour = "#000000", linewidth = .25, fill = NA),
-          panel.grid = element_blank(),
-          plot.margin = margin(t = 0, b = 0, r = 0, l = 0, unit = "cm"),
-          plot.title = element_text(family = "Cormorant", size = 100, face = "bold", hjust = .5, margin = margin(t = 0)),
-          plot.subtitle = element_text(family = "Cormorant", size = 100, colour = "#555555", face = "bold", hjust = .5, margin = margin(t = 5, b = 10)),
-          axis.text = element_blank(),
-          axis.title = element_blank(),
-          axis.ticks = element_blank(),
-          strip.text = element_markdown(family = "Cormorant", size = 86, face = "bold", lineheight = .21),
-          strip.background = element_rect(colour = "#000000", fill = "#d6d6d6", linewidth = .25)) +
-    guides(fill = guide_colourbar(title = "", label.theme = element_text(family = "Cormorant", size = 75, face = "bold"),
-                                  barwidth = 1, barheight = 8, order = 1, frame.linetype = 1,
-                                  frame.colour = "#000000", ticks.colour = "#f7fbff",
-                                  direction = "vertical", reverse = FALSE, even.steps = TRUE,
-                                  draw.ulim = TRUE, draw.llim = TRUE))
-
-
-# Saves Members Map ~
-ggsave("./SBBEPlots/SBBEMembersMap.png", Map_Members, limitsize = FALSE,
-       device = "png", scale = 1, width = 9, height = 5.5, dpi = 600)
-
-
-# Creates Attendees Map ~
-Map_Attendees <-
- ggplot() +
-    geom_sf(data = fulldf_map %>% filter(Stats == "Attendees", !is.na(Conference)), aes(fill = Percentage * 100), colour = "#f7fbff") +
-    coord_sf(xlim = c(-75.75, -33), ylim = c(-35, 6.5), expand = FALSE) +
-    scale_y_continuous(breaks = c(0, -10, -20, -30)) + 
-    geom_star(data = fulldf_map %>% filter(Division == "Per Region", Stats == "Attendees", Region == "SBBE24", !is.na(Conference)),
-              aes(x = Longitude, y = Latitude), size = 2.75, starshape = 15, starstroke = .3,
-              fill = "#365338", colour = "#ffffff") +
-    geom_star(data = fulldf_map %>% filter(Division == "Per Region", Stats == "Attendees", Region == "Exterior", !is.na(Conference)),
-              aes(x = Longitude, y = Latitude, fill = Percentage), size = 25, starshape = 8,
-              starstroke = .3, colour = "#f7fbff") +
-    geom_text(data = fulldf_map %>% filter(Division == "Per Region", Stats == "Attendees", Region == "SBBE24", !is.na(Conference)),
-              aes(x = Longitude, y = Latitude, label = Region),
-              nudge_x = 3, nudge_y = -.85,
-              size = 20, family = "Cormorant", fontface = "bold", colour = "#365338") +
-    labs(title = "% de Participantes do SBBE24 por Região & Estado",
-         subtitle = "% of SBBE24 Attendees per Region & State") +
-    scale_fill_continuous(low = "#ece7f2", high = "#023858",
-                          breaks = c(10, 20, 30, 40, 50, 60),
-                          labels = c("10%", "20%", "30%", "40%", "50%", "60%"),
-                          limits = c(0, 65)) +
-    ggtext::geom_richtext(data = fulldf_map %>% filter(Division == "Per Region", Stats == "Members", Region != "SBBE24",  Region != "SBBE26", !is.na(Conference)),
-                          aes(x = Longitude, y = Latitude, label = name_region_Bilingual_2),
-                          family = "Cormorant", fontface = "bold", size = 8, colour = "#000000", fill = NA, label.color = NA, lineheight = .4) +
-    facet_grid(Conference ~ Division, labeller = labeller(Division = ~ unique(fulldf_map$Division_Bilingual[match(.x, fulldf_map$Division)]))) +
-    annotation_scale(data = fulldf_map %>% filter(Division == "Per Region", Stats == "Members", !is.na(Conference)),
-                     text_family = "Cormorant", location = "bl", line_width = 1,
-                     text_cex = 6, style = "ticks",
-                     pad_x = unit(.1, "in"), pad_y = unit(.1, "in")) +
-    annotation_north_arrow(data = fulldf_map %>% filter(Division == "Per Region", Stats == "Members", !is.na(Conference)),
-                           location = "bl", which_north = "true", style = north_arrow_fancy_orienteering,
-                           pad_x = unit(.1, "in"), pad_y = unit(.175, "in")) +
-    theme(legend.position = "right",
-          legend.margin = margin(t = 0, b = 0, r = 0, l = 20),
-          legend.box.margin = margin(t = 0, b = 0, r = 0, l = 0),
-          panel.background = element_rect(fill = "#ffffff"),
-          panel.border = element_rect(colour = "#000000", linewidth = .25, fill = NA),
-          panel.grid = element_blank(),
-          plot.margin = margin(t = 0, b = 0, r = 0, l = 0, unit = "cm"),
-          plot.title = element_text(family = "Cormorant", size = 100, fontface = "bold", hjust = .5, margin = margin(t = 0)),
-          plot.subtitle = element_text(family = "Cormorant", size = 100, colour = "#555555", face = "bold", hjust = .5, margin = margin(t = 5, b = 10)),
-          axis.text = element_blank(),
-          axis.title = element_blank(),
-          axis.ticks = element_blank(),
-          strip.text = element_markdown(family = "Cormorant", size = 86, face = "bold", lineheight = .21),
-          strip.background = element_rect(colour = "#000000", fill = "#d6d6d6", linewidth = .25)) +
-    guides(fill = guide_colourbar(title = "", label.theme = element_text(family = "Cormorant", size = 75, face = "bold"),
-                                  barwidth = 1, barheight = 8, order = 1, frame.linetype = 1,
-                                  frame.colour = "#000000", ticks.colour = "#f7fbff",
-                                  direction = "vertical", reverse = FALSE, even.steps = TRUE,
-                                  draw.ulim = TRUE, draw.llim = TRUE))
-
-
-# Saves Attendees Map ~
-ggsave("./SBBEPlots/SBBE24AttendeesMap.png", Map_Attendees, limitsize = FALSE,
-       device = "png", scale = 1, width = 8, height = 8, dpi = 600)
-
-
-##########                               ##########
-###        SBBE Article Map (Figure 1) ~        ###
-##########                               ##########
 
 
 # Loads Brazilian biome data  ~
@@ -1138,6 +840,11 @@ equator_sf <- st_sf(name = "Equator", geometry = equator)
 tropic_sf  <- st_sf(name = "Tropic of Capricorn", geometry = tropic)
 
 
+##########            ##########
+###         Figure 1         ###
+##########            ##########
+
+
 # Creates Article Map ~
 Map_Article_White <-
   ggplot() +
@@ -1179,13 +886,13 @@ Map_Article_White <-
 
 
 # Saves Article Map ~
-ggsave("./SBBEPlots/SBBEArticleMap_Fig1-EN.png", Map_Article_White,
+ggsave("./SBBEPlots/SBBECommentaryArticle_Fig1-EN.png", Map_Article_White,
        device = "png", bg = "transparent", limitsize = FALSE, scale = 1, width = 8, height = 8, dpi = 1000)
 
 
-##########                               ##########
-###        SBBE Article Map (Figure 2) ~        ###
-##########                               ##########
+##########            ##########
+###         Figure 2         ###
+##########            ##########
 
 
 # Sets custom x-axis labels ~
@@ -1304,12 +1011,15 @@ else {ggsave(filename,
              scale = 1,
              width = 12.25,
              height = 6,
-             dpi = 100)}}
+             dpi = 600)}}
 
 
 # Runs function to get the Article Map in different flavour ~ 
-make_map_plot("./SBBEPlots/SBBEArticleMap_Fig2-EN.pdf", x_labels = xlabel_EN, y_labels = ylabel_EN,
+make_map_plot("./SBBEPlots/SBBECommentaryArticle_Fig2-EN.pdf", x_labels = xlabel_EN, y_labels = ylabel_EN,
               region_label_column = "name_region_EN", filter_abroad_only = FALSE, format = "pdf")
+make_map_plot("./SBBEPlots/SBBECommentaryArticle_Fig2-EN.png", x_labels = xlabel_EN, y_labels = ylabel_EN,
+              region_label_column = "name_region_EN", filter_abroad_only = FALSE, format = "png")
+
 
 
 
