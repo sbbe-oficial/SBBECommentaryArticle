@@ -16,23 +16,3 @@
 |SBBE Article Map (Figure 2)|
 |------------------|
 | [![SBBE Article Map (Figure 2)](https://raw.githubusercontent.com/sbbe-oficial/DataAnalysis/main/SBBEPlots/SBBEArticleMap_Fig2-EN.png)](https://raw.githubusercontent.com/sbbe-oficial/DataAnalysis/main/SBBEPlots/SBBEArticleMap_Fig2-EN.pdf)|
-
-|SBBE Membership Stats|
-|---|
-|![SBBE Membership Stats](https://github.com/sbbe-oficial/DataAnalysis/blob/main/SBBEPlots/SBBEMembersStats.png)|
-
-|SBBE Membership Stats|
-|---|
-|![SBBE Membership Stats](https://github.com/sbbe-oficial/DataAnalysis/blob/main/SBBEPlots/SBBEMembersStats.png)|
-
-|SBBE Institutional Representation|
-|---|
-|![SBBE Institutional Representation](https://github.com/sbbe-oficial/DataAnalysis/blob/main/SBBEPlots/SBBEMembersInstitutions.png)|
-
-|SBBE Members Map|
-|---|
-|![SBBE Members Map](https://github.com/sbbe-oficial/DataAnalysis/blob/main/SBBEPlots/SBBEMembersMap.png)|
-
-|SBBE24 Attendees Map|
-|---|
-|![SBBE24 Attendees Map](https://github.com/sbbe-oficial/DataAnalysis/blob/main/SBBEPlots/SBBE24AttendeesMap.png)|
