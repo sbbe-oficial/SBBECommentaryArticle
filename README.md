@@ -1,5 +1,6 @@
 # The birth of the Brazilian Society for Evolutionary Biology — making amends with History at long last
-***
+
+#### **George Pacheco** [![Foo](https://github.com/sbbe-oficial/SBBECommentaryArticle/blob/main/Auxiliary/ORCID/ORCIDGreenRoundIcon.png)](https://orcid.org/0000-0002-9367-6813)
 
 ### Code repository for data analyses and visualisation conducted in Pacheco et al. (2026).
 
