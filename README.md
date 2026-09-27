@@ -7,6 +7,9 @@
 
 > Both Figure 1 and Figure 2 presented in Pacheco _et al._ 2026 were produced using the R script [`SBBECommentaryArticle.R`](https://github.com/sbbe-oficial/SBBECommentaryArticle/blob/main/SBBECommentaryArticle/SBBECommentaryArticle.R), which incorporates data concerning [SBBE](https://www.sbbevol.org/en) membership, as well as [SBBE24](https://www.sbbevol.org/en/congressos) and [SBBE26](https://www.sbbevol.org/en/congressos) attendance. Please note that Figure 1 was finalised in [`Adobe Illustrator`](https://www.adobe.com/products/illustrator.html).
 
+&nbsp;
+&nbsp;
+
 |Figure 1 (base map)|
 |---|
 |![SBBE Article Map (Figure 1)](https://github.com/sbbe-oficial/SBBECommentaryArticle/blob/main/SBBECommentaryArticle/SBBEPlots/SBBECommentaryArticle_Fig1-EN.png)|
