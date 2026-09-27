@@ -13,8 +13,8 @@
 
 |Figure 1 (base map)|
 |---|
-|![SBBE Article Map (Figure 1)](https://github.com/sbbe-oficial/SBBECommentaryArticle/blob/main/SBBEPlots/SBBECommentaryArticle_Fig1-EN.png)|
+|![SBBE Article Map (Figure 1)](https://github.com/sbbe-oficial/SBBECommentaryArticle/blob/main/SBBECommentaryArticle/SBBEPlots/SBBECommentaryArticle_Fig1-EN.png)|
 
 |Figure 2|
 |------------------|
-| [![SBBE Article Map (Figure 2)](https://raw.githubusercontent.com/sbbe-oficial/SBBECommentaryArticle/main/SBBEPlots/SBBECommentaryArticle_Fig2-EN.png)](https://raw.githubusercontent.com/sbbe-oficial/SBBECommentaryArticle/main/SBBEPlots/SBBECommentaryArticle_Fig2-EN.pdf)|
+| [![SBBE Article Map (Figure 2)](https://raw.githubusercontent.com/sbbe-oficial/SBBECommentaryArticle/main/SBBECommentaryArticle/SBBEPlots/SBBECommentaryArticle_Fig2-EN.jpg)](https://raw.githubusercontent.com/sbbe-oficial/SBBECommentaryArticle/main/SBBECommentaryArticle/SBBEPlots/SBBECommentaryArticle_Fig2-EN.pdf)|
