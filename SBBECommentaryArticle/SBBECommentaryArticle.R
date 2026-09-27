@@ -1017,8 +1017,6 @@ else {ggsave(filename,
 # Runs function to get the Article Map in different flavour ~ 
 make_map_plot("./SBBEPlots/SBBECommentaryArticle_Fig2-EN.pdf", x_labels = xlabel_EN, y_labels = ylabel_EN,
               region_label_column = "name_region_EN", filter_abroad_only = FALSE, format = "pdf")
-make_map_plot("./SBBEPlots/SBBECommentaryArticle_Fig2-EN.png", x_labels = xlabel_EN, y_labels = ylabel_EN,
-              region_label_column = "name_region_EN", filter_abroad_only = FALSE, format = "png")
 
 
 
