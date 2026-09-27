@@ -5,7 +5,7 @@
 
 #### Code repository for data analysis and visualisation conducted in Pacheco et al. (2026).
 
-> Both **Figure 1** and **Figure 2** were produced using the R script below, which incorporates data concerning [SBBE](https://www.sbbevol.org/en) membership, as well as [SBBE24](https://www.sbbevol.org/en/congressos) and [SBBE26](https://www.sbbevol.org/en/congressos) attendance. Please note that Figure 1 was finalised in [`Adobe Illustrator`](https://www.adobe.com/products/illustrator.html).
+> Both **Figure 1** and **Figure 2** were produced using the R script below, which incorporates data concerning [SBBE](https://www.sbbevol.org/en) membership, as well as [SBBE24](https://www.sbbevol.org/en/congressos) and [SBBE26](https://www.sbbevol.org/en/congressos) attendance. Please note that **Figure 1** was finalised in [`Illustrator`](https://www.adobe.com/products/illustrator.html).
 
 <br>
 
