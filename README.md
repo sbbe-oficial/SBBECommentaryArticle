@@ -5,21 +5,6 @@
 
 #### Code repository for data analysis and visualisation conducted in Pacheco et al. (2026).
 
-> Both **Figure 1** and **Figure 2** were produced using the R script below, which incorporates data concerning [SBBE](https://www.sbbevol.org/en) membership, as well as [SBBE24](https://www.sbbevol.org/en/congressos) and [SBBE26](https://www.sbbevol.org/en/congressos) attendance. Please note that **Figure 1** was finalised in [`Illustrator`](https://www.adobe.com/products/illustrator.html).
-
 <br>
 
-- [`SBBECommentaryArticle.R`](https://github.com/sbbe-oficial/SBBECommentaryArticle/blob/main/SBBECommentaryArticle/SBBECommentaryArticle.R)
-
-&nbsp;
-&nbsp;
-
-|Figure 1 (base map)|
-|---|
-|![SBBE Article Map (Figure 1)](https://github.com/sbbe-oficial/SBBECommentaryArticle/blob/main/SBBECommentaryArticle/SBBEPlots/SBBECommentaryArticle_Fig1-EN.png)|
-
-&nbsp;
-
-|Figure 2|
-|------------------|
-| [![SBBE Article Map (Figure 2)](https://raw.githubusercontent.com/sbbe-oficial/SBBECommentaryArticle/main/SBBECommentaryArticle/SBBEPlots/SBBECommentaryArticle_Fig2-EN.jpg)](https://raw.githubusercontent.com/sbbe-oficial/SBBECommentaryArticle/main/SBBECommentaryArticle/SBBEPlots/SBBECommentaryArticle_Fig2-EN.pdf)|
+- Please visit the [Wiki page](https://github.com/g-pacheco/Passersp.Genomics/wiki) for detailed information on the individual analyses.
