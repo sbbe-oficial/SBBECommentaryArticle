@@ -7,7 +7,7 @@
 
 <br>
 
-- Please visit the [Wiki page]([https://github.com/g-pacheco/Passersp.Genomics/wiki](https://github.com/sbbe-oficial/SBBECommentaryArticle/wiki)) for detailed information on the individual analyses.
+- Please visit the [Wiki page](https://github.com/sbbe-oficial/SBBECommentaryArticle/wiki) for detailed information on the individual analyses.
 ***
 
 ![](https://github.com/sbbe-oficial/SBBECommentaryArticle/blob/main/SBBECommentaryArticle/Auxiliary/SBBECommentaryArticle--GitHubImage.jpg)
