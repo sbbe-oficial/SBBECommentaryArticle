@@ -11,5 +11,5 @@
 ***
 
 #### Focal individual photographed in Garderen, The Netherlands.
-![](https://github.com/ssbe-oficial/SBBECommentaryArticle/blob/main/SBBECommentaryArticle/Auxiliary/SBBECommentaryArticle--GitHubImagejpg)
+![](https://github.com/sbbe-oficial/SBBECommentaryArticle/blob/main/SBBECommentaryArticle/Auxiliary/SBBECommentaryArticle--GitHubImage.jpg)
 ###### Photo courtesy of **Jaap Deene**.
