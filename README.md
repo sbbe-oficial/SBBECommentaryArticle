@@ -10,6 +10,4 @@
 - Please visit the [Wiki page]([https://github.com/g-pacheco/Passersp.Genomics/wiki](https://github.com/sbbe-oficial/SBBECommentaryArticle/wiki)) for detailed information on the individual analyses.
 ***
 
-#### Focal individual photographed in Garderen, The Netherlands.
 ![](https://github.com/sbbe-oficial/SBBECommentaryArticle/blob/main/SBBECommentaryArticle/Auxiliary/SBBECommentaryArticle--GitHubImage.jpg)
-###### Photo courtesy of **Jaap Deene**.
