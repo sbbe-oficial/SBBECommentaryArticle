@@ -991,7 +991,7 @@ Map <- ggplot() +
           guides(fill = guide_colourbar(title = "", label.theme = element_text(family = "Cormorant", size = 12, face = "bold"),
                                         barwidth = 1.1, barheight = 12, order = 1, frame.linetype = 1,
                                         frame.colour = "#000000", ticks.colour = "#f7fbff",
-                                        direction = "vertical", reverse = FALSE, even.steps = TRUE,
+                                        direction = "vertical", reverse = FALSE,
                                         draw.ulim = TRUE, draw.llim = TRUE))
 
   
